@@ -12,6 +12,8 @@ German UI. Built with React + Vite and Supabase (Postgres + Auth).
 
 Live: <https://siflueckiger.github.io/microbit-class-portal/>
 
+Hosted Supabase project: `wygzkmauediourqgcdyg` (region `eu-central-1`).
+
 ## Architecture
 
 - **Frontend**: Vite + React + TypeScript, hash routing
@@ -36,7 +38,7 @@ supabase start      # local Postgres + Auth + Studio (first run pulls images)
 npm run dev         # http://localhost:5174
 ```
 
-Create `.env.local` (git-ignored) with the values printed by `supabase start`:
+Create `.env.development.local` (git-ignored) with the values printed by `supabase start`:
 
 ```
 VITE_SUPABASE_URL=http://127.0.0.1:54321
@@ -51,6 +53,18 @@ curl -X POST http://127.0.0.1:54321/auth/v1/admin/users \
   -H "Authorization: Bearer <SERVICE_ROLE_KEY>" \
   -H "Content-Type: application/json" \
   -d '{"email":"lehrer@example.com","password":"Testpasswort123","email_confirm":true}'
+```
+
+Then register that account as an admin so the row-level security policies let it
+manage data (use the `id` from the response above):
+
+```bash
+curl -X POST http://127.0.0.1:54321/rest/v1/admins \
+  -H "apikey: <SERVICE_ROLE_KEY>" \
+  -H "Authorization: Bearer <SERVICE_ROLE_KEY>" \
+  -H "Content-Type: application/json" \
+  -H "Prefer: resolution=merge-duplicates" \
+  -d '{"user_id":"<user-id>"}'
 ```
 
 Seed data (`supabase/seed.sql`) creates class **5a** with code **DEMO5A** and two
@@ -109,8 +123,9 @@ reopen a tutorial's workspace when editing.
 
 - Students have no accounts and no personal data is stored.
 - A class code grants read access to that class's tutorials only.
-- The teacher account is the only authenticated user; RLS policies grant it
-  access to all rows.
+- Teacher writes are restricted to users listed in the `admins` table (checked
+  by the `is_admin()` function in the RLS policies), so even if public sign-ups
+  were enabled a random account could not read or write anything.
 - The Supabase anon key is public by design; the service-role key is never used
   in the frontend.
 

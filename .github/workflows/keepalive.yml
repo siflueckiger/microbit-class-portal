@@ -1,0 +1,22 @@
+name: Keep Supabase awake
+
+# Supabase free-tier projects pause after a while without activity.
+# This pings the project every other day so it stays available over breaks.
+
+on:
+  schedule:
+    - cron: "23 4 */2 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          curl --fail --silent --show-error \
+            "https://wygzkmauediourqgcdyg.supabase.co/rest/v1/" \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5Z3prbWF1ZWRpb3VycWdjZHlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1MzkwNDMsImV4cCI6MjEwOTExNTA0M30.L7VIg9q1GYVAhFY27mNlO_L15yw4N6UUi-pAs4YOEOU" \
+            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5Z3prbWF1ZWRpb3VycWdjZHlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1MzkwNDMsImV4cCI6MjEwOTExNTA0M30.L7VIg9q1GYVAhFY27mNlO_L15yw4N6UUi-pAs4YOEOU" \
+            -o /dev/null
+          echo "Supabase is awake."
