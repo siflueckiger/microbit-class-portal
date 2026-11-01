@@ -2,10 +2,13 @@ import { useState } from "react";
 import { signOut } from "../lib/auth";
 import { navigate } from "../lib/router";
 import { ClassesTab } from "./ClassesTab";
+import { TeachersTab } from "./TeachersTab";
 import { TutorialsTab } from "./TutorialsTab";
 
 export function TeacherDashboard({ email }: { email: string }) {
-  const [tab, setTab] = useState<"tutorials" | "classes">("tutorials");
+  const [tab, setTab] = useState<"tutorials" | "classes" | "teachers">(
+    "tutorials",
+  );
 
   const logout = async () => {
     await signOut();
@@ -45,9 +48,22 @@ export function TeacherDashboard({ email }: { email: string }) {
         >
           Klassen
         </button>
+        <button
+          type="button"
+          className={"tabBtn" + (tab === "teachers" ? " tabBtn--active" : "")}
+          onClick={() => setTab("teachers")}
+        >
+          Lehrpersonen
+        </button>
       </nav>
 
-      {tab === "tutorials" ? <TutorialsTab /> : <ClassesTab />}
+      {tab === "tutorials" ? (
+        <TutorialsTab />
+      ) : tab === "classes" ? (
+        <ClassesTab />
+      ) : (
+        <TeachersTab />
+      )}
     </div>
   );
 }

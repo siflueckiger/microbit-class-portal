@@ -27,6 +27,10 @@ Hosted Supabase project: `wygzkmauediourqgcdyg` (region `eu-central-1`).
 - **Access control**: the anonymous (student) role cannot read tables directly.
   Two security-definer RPCs, `student_get_class(code)` and
   `student_get_tutorial(code, id)`, gate everything behind a valid class code.
+- **Teacher management**: a Supabase Edge Function
+  (`supabase/functions/teacher`) lists, creates and deletes teacher accounts
+  using the service role. It only runs for callers in the `admins` allow-list,
+  so admins can add colleagues from the app's **Lehrpersonen** tab.
 
 ## Local development
 
@@ -82,17 +86,19 @@ Helpful:
 1. `supabase login`
 2. `supabase link --project-ref <project-ref>`
 3. `npm run db:push` — apply migrations to the hosted database.
-4. In the Supabase dashboard: **Authentication → Providers → Email**, disable
-   "Allow new users to sign up", then create the teacher account under
-   **Authentication → Users**.
-5. Create `.env.production` with the hosted project values (the anon key is
+4. `supabase functions deploy teacher --project-ref <project-ref>` — deploy the
+   teacher-management function.
+5. In the Supabase dashboard: **Authentication → Providers → Email**, disable
+   "Allow new users to sign up". (Additional teachers are then created from the
+   app's **Lehrpersonen** tab.)
+6. Create `.env.production` with the hosted project values (the anon key is
    public, so committing it is fine):
    ```
    VITE_SUPABASE_URL=https://<project-ref>.supabase.co
    VITE_SUPABASE_ANON_KEY=<anon key>
    ```
-6. `npm run deploy` — builds and publishes `dist/` to the `gh-pages` branch.
-7. The workflow `.github/workflows/keepalive.yml` pings the project every few
+7. `npm run deploy` — builds and publishes `dist/` to the `gh-pages` branch.
+8. The workflow `.github/workflows/keepalive.yml` pings the project every few
    days so the free-tier project does not pause over school breaks.
 
 ## Data model
