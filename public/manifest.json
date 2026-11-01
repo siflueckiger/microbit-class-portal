@@ -15,13 +15,6 @@
       "description": "Shake the micro:bit to roll a random number.",
       "file": "tutorials/7b/dice.md",
       "order": 1
-    },
-    {
-      "id": "test-delete-ui-test-mvxz04u4",
-      "class": "test",
-      "title": "Delete UI test",
-      "description": "Temporary delete test.",
-      "file": "tutorials/test/delete-ui-test.md"
     }
   ]
 }
