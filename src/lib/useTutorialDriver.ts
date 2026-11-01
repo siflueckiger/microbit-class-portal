@@ -10,19 +10,17 @@ export interface TutorialDriver {
   iframeRef: RefObject<HTMLIFrameElement | null>;
   iframeSrc: string;
   ready: boolean;
-  status: string;
   loadTutorial: (markdown: string) => Promise<void>;
 }
 
 /**
- * Embeds the micro:bit MakeCode editor and loads a tutorial into it from
- * Markdown text via the driver's `importTutorial`.
+ * Embeds the micro:bit MakeCode editor and starts a tutorial from generated
+ * Markdown via the driver's `importTutorial`.
  */
 export function useTutorialDriver(): TutorialDriver {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const driverRef = useRef<MakeCodeFrameDriver | null>(null);
   const [ready, setReady] = useState(false);
-  const [status, setStatus] = useState("Loading MakeCode…");
 
   const iframeSrc = useMemo(
     () =>
@@ -44,10 +42,7 @@ export function useTutorialDriver(): TutorialDriver {
       {
         controllerId: "microbit-class-portal",
         initialProjects: async () => [defaultMakeCodeProject],
-        onEditorContentLoaded: () => {
-          setReady(true);
-          setStatus("Starting tutorial…");
-        },
+        onEditorContentLoaded: () => setReady(true),
       },
       () => iframeRef.current ?? undefined,
     );
@@ -63,9 +58,9 @@ export function useTutorialDriver(): TutorialDriver {
 
   const loadTutorial = useCallback(async (markdown: string) => {
     const driver = driverRef.current;
-    if (!driver) throw new Error("The editor is not ready yet.");
+    if (!driver) throw new Error("Der Editor ist noch nicht bereit.");
     await driver.importTutorial({ markdown });
   }, []);
 
-  return { iframeRef, iframeSrc, ready, status, loadTutorial };
+  return { iframeRef, iframeSrc, ready, loadTutorial };
 }
