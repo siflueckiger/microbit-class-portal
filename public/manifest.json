@@ -15,13 +15,6 @@
       "description": "Shake the micro:bit to roll a random number.",
       "file": "tutorials/7b/dice.md",
       "order": 1
-    },
-    {
-      "id": "test-smoke-test-tutorial-mvxyxxh8",
-      "class": "test",
-      "title": "Smoke test tutorial",
-      "description": "Created by the automated smoke test.",
-      "file": "tutorials/test/smoke-test-tutorial.md"
     }
   ]
 }
